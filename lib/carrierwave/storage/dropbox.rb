@@ -55,7 +55,7 @@ module CarrierWave
         end
 
         def download
-          @client.get_file api_path
+          @client.download @path
         end
 
         def metadata
