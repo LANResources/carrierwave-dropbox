@@ -1,5 +1,6 @@
 # encoding: utf-8
-require 'dropbox_sdk'
+require 'dropbox'
+require 'mime/types'
 
 module CarrierWave
   module Storage
@@ -10,8 +11,8 @@ module CarrierWave
 
       # Store a single file
       def store!(file)
-        location = (config[:access_type] == "dropbox") ? "/#{uploader.store_path}" : uploader.store_path
-        dropbox_client.put_file(location, file.to_file)
+        location = "/Public/#{uploader.store_path}"
+        dropbox_client.upload location, file.to_file
       end
 
       # Retrieve a single file
@@ -20,11 +21,7 @@ module CarrierWave
       end
 
       def dropbox_client
-        @dropbox_client ||= begin
-          session = DropboxSession.new(config[:app_key], config[:app_secret])
-          session.set_access_token(config[:access_token], config[:access_token_secret])
-          DropboxClient.new(session, config[:access_type])
-        end
+        @dropbox_client ||= ::Dropbox::Client.new config[:access_token]
       end
 
       private
@@ -32,11 +29,7 @@ module CarrierWave
       def config
         @config ||= {}
 
-        @config[:app_key] ||= uploader.dropbox_app_key
-        @config[:app_secret] ||= uploader.dropbox_app_secret
         @config[:access_token] ||= uploader.dropbox_access_token
-        @config[:access_token_secret] ||= uploader.dropbox_access_token_secret
-        @config[:access_type] ||= uploader.dropbox_access_type || "dropbox"
         @config[:user_id] ||= uploader.dropbox_user_id
 
         @config
@@ -51,16 +44,36 @@ module CarrierWave
         end
 
         def url
-          @client.media(@path)["url"]
+          "https://dl.dropboxusercontent.com/u/#{@config[:user_id]}/#{@path}"
         end
 
         def delete
-          path = @path
-          path = "/#{path}" if @config[:access_type] == "dropbox"
           begin
-            @client.file_delete(path)
-          rescue DropboxError
+            @client.delete api_path
+          rescue ::Dropbox::ApiError
           end
+        end
+
+        def download
+          @client.get_file api_path
+        end
+
+        def metadata
+          @metadata ||= @client.get_metadata api_path
+        end
+
+        def content_type
+          MIME::Types.type_for(api_path).first.to_s
+        end
+
+        def size
+          metadata.size.to_s
+        end
+
+        private
+
+        def api_path
+          "/Public/#{@path}"
         end
       end
     end

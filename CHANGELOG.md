@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0 (June 26, 2017)
+
+* Upgrade for Dropbox API v2
+
 ## 1.2.1 (February 24, 2014)
 
 * Use the uploader's store_path instead of the root

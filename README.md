@@ -16,36 +16,16 @@ Then, add this line to your application's Gemfile:
 gem 'carrierwave-dropbox'
 ~~~
 
-And make sure that it gets installed running the `bundle` command. Then, you have
-to run the `rake dropbox:authorize` command to authorize your application to access to
-your Dropbox.
+And make sure that it gets installed running the `bundle` command.
 
-If you are using Rails, the Rake task is automatically loaded. Otherwise, if you
-aren't running a Rails application, first load the task in your `Rakefile`:
+Go back to the [Dropbox apps dashboard](https://www.dropbox.com/developers/apps), and under your newly created app, click the link to generate an OAuth2 access token.
 
-~~~ruby
-load "carrierwave/dropbox/authorize.rake"
-~~~
-
-Then you have to run this task:
-
-~~~bash
-rake dropbox:authorize APP_KEY=app_key APP_SECRET=app_secret ACCESS_TYPE=dropbox|app_folder
-~~~
-
-This command will output an URL ; use your browser to hit this URL and authorize
-your application. After that, return to the console and validate typing "y".
-Finally, you will get your credentials. Config CarrierWave to make it work with
-your Dropbox application:
+Config CarrierWave to make it work with your Dropbox application:
 
 ~~~ruby
 CarrierWave.configure do |config|
-  config.dropbox_app_key = ENV["APP_KEY"]
-  config.dropbox_app_secret = ENV["APP_SECRET"]
   config.dropbox_access_token = ENV["ACCESS_TOKEN"]
-  config.dropbox_access_token_secret = ENV["ACCESS_TOKEN_SECRET"]
   config.dropbox_user_id = ENV["USER_ID"]
-  config.dropbox_access_type = "dropbox"
 end
 ~~~
 
