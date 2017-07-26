@@ -12,7 +12,7 @@ module CarrierWave
       # Store a single file
       def store!(file)
         location = "/Public/#{uploader.store_path}"
-        dropbox_client.upload location, file.to_file
+        dropbox_client.upload location, file.to_file, mode: 'overwrite'
       end
 
       # Retrieve a single file

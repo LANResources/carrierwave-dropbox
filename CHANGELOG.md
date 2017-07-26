@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 (July 26, 2017)
+
+* Change default mode for uploads to overwrite when there is a conflict.
+
 ## 2.0.0 (June 26, 2017)
 
 * Upgrade for Dropbox API v2
