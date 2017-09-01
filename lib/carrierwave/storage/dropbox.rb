@@ -45,6 +45,8 @@ module CarrierWave
 
         def url
           shared_link
+        rescue
+          @uploader.default_url
         end
 
         def delete
