@@ -44,7 +44,7 @@ module CarrierWave
         end
 
         def url
-          "https://dl.dropboxusercontent.com/u/#{@config[:user_id]}/#{@path}"
+          shared_link
         end
 
         def delete
@@ -70,10 +70,27 @@ module CarrierWave
           metadata.size.to_s
         end
 
+        def get_temporary_link
+          @client.get_temporary_link api_path
+        end
+
+        def shared_link
+          @shared_link ||= shared_links.first || begin
+            @client.create_shared_link_with_settings api_path
+            shared_links.first
+          end
+        end
+
         private
 
         def api_path
           "/Public/#{@path}"
+        end
+
+        def shared_links
+          @client.list_shared_links(api_path).map do |link_metadata|
+            link_metadata.url.gsub /\?dl=0$/, "?dl=1"
+          end
         end
       end
     end

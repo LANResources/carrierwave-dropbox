@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 (September 1, 2017)
+
+* Use shared links to replicate removed public url functionality.
+
+* Switch to custom forked version of Dropbox SDK gem
+
 ## 2.0.1 (July 26, 2017)
 
 * Change default mode for uploads to overwrite when there is a conflict.
